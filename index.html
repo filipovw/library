@@ -1,37 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Library</title>
-    <script src="js.js" defer></script>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <button>NEW BOOK</button>
-        <div class="input-form">
-          <h2>Add Book</h2>
-          <form id="form">
-            <label for="title">Book Title:</label><br />
-            <input type="text" id="title" name="title" /><br />
-
-            <label for="author">Book Author:</label><br />
-            <input type="text" id="author" name="author" /><br />
-
-            <label for="pcount">Book Page Count:</label><br />
-            <input type="number" id="pcount" name="pcount" /><br />
-
-            <label for="read">Have you read the book or not?</label><br />
-            <input type="checkbox" id="read" name="read" /><br />
-          </form>
-          <button type="submit" form="form" value="Add">Add</button>
-          <input type="button" value="Cancel" />
-        </div>
-      </div>
-      <div class="main-content"></div>
-    </div>
-  </body>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script src="js.js" defer></script>
+</head>
+<body>
+  <button id="new-book-btn">NEW BOOK</button>
+  <form id="new-book-form">
+    <label>Title: <input type="text" name="title" required></label><br>
+    <label>Author: <input type="text" name="author" required></label><br>
+    <label>Number of pages: <input type="number" name="numPages" required></label><br>
+    <label>Read: <input type="checkbox" name="read"></label><br>
+    <input type="button" value="Cancel" id="cancel-btn">
+    <input type="submit" value="Add book">
+  </form>
+  <div id="book-display"></div>
+</body>
 </html>

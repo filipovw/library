@@ -1,122 +1,104 @@
-const bookArea = document.querySelector(".main-content");
+const bookDisplay = document.getElementById("book-display");
+const newBookForm = document.getElementById("new-book-form");
+const newBookBtn = document.getElementById("new-book-btn");
 
-let library = [];
+let myLibrary = [];
 
-function Book(title, author, pageCount, readOrNot) {
+function Book(title, author, numPages, read) {
   this.title = title;
   this.author = author;
-  this.pageCount = pageCount;
-  this.readOrNot = readOrNot;
-  let result = "";
-
-  this.info = function () {
-    if (title && author && pageCount && readOrNot) {
-      result = title + " by " + author + ", " + pageCount + " pages, ";
-      readOrNot ? (result += "read") : (result += "not read yet");
-      return result;
-    }
-  };
+  this.numPages = numPages;
+  this.read = read;
 }
 
-function addBook(Book) {
-  if (checkIfBookInLibrary(Book) && library.length != 0) {
-    return;
-  }
-  library.push(Book);
-  displayBook(Book);
-}
+Book.prototype.info = function () {
+  return `${this.title} by ${this.author}, ${this.numPages} pages, ${
+    this.read ? "already read" : "not read yet"
+  }`;
+};
 
-function displayBook(Book) {
-  if (library.length > 0) {
-    let bookDiv = document.createElement("div");
-    bookDiv.classList.add("book");
-    bookArea.appendChild(bookDiv);
-
-    let index = document.createAttribute("data-index");
-    index.value = (library.length - 1).toString();
-    document.querySelector(".book:last-child").setAttributeNode(index);
-
-    let bookTitle = document.createElement("div");
-    bookTitle.classList.add("book-title");
-    bookDiv.appendChild(bookTitle);
-    bookTitle.textContent = Book.title;
-
-    let bookAuthor = document.createElement("div");
-    bookAuthor.classList.add("book-author");
-    bookDiv.appendChild(bookAuthor);
-    bookAuthor.textContent = Book.author;
-
-    let bookPageCount = document.createElement("div");
-    bookPageCount.classList.add("book-page-count");
-    bookDiv.appendChild(bookPageCount);
-    bookPageCount.textContent = Book.pageCount;
-
-    let bookReadOrNot = document.createElement("div");
-    bookReadOrNot.classList.add("book-read-or-not");
-    bookDiv.appendChild(bookReadOrNot);
-    bookReadOrNot.textContent = Book.readOrNot;
-
-    let actions = document.createElement("div");
-    actions.classList.add("actions");
-    bookDiv.appendChild(actions);
-
-    let removeButton = document.createElement("button");
-    actions.appendChild(removeButton);
-    removeButton.classList.add("remove-button");
-    removeButton.textContent = "REMOVE";
-    //Get data index of the parent element of the parent element, fetch the book in the library at that index and send it over to removeBook function
-
-    let readButton = document.createElement("button");
-    actions.appendChild(readButton);
-    readButton.classList.add("read-button");
-    readButton.textContent = "Read?";
-    //Get data index of the parent element of the parent element, fetch the book in the library at that index and send it over to switchReadStatus function
-  }
-}
-
-function removeBook(Book) {
-  if (checkIfBookInLibrary(Book)) {
-    for (let i = 0; i < library.length; i++) {
-      if (
-        Book.title == library[i].title &&
-        Book.author == library[i].author &&
-        Book.pageCount == library[i].pageCount
-      ) {
-        library.splice(i, 1);
-        removeBookFromDisplay(i.toString());
-      }
-    }
-  }
-}
-
-function removeBookFromDisplay(index) {
-  //let book = document.querySelector("[data-index=" + `"'${index}'"`) + "]";
-  let bookToRemove = bookArea.getElementsByClassName("book")[parseInt(index)];
-  bookArea.removeChild(bookToRemove);
-  reorderDataAttributes();
-}
-
-function reorderDataAttributes() {
-  let books = document.getElementsByClassName("book");
-  for (let i = 0; i < library.length; i++) {
-    books[i].setAttribute("data-index", i.toString());
-  }
-}
-
-function checkIfBookInLibrary(Book) {
-  let yesOrNo;
-  for (let i = 0; i < library.length; i++) {
-    if (
-      Book.title == library[i].title &&
-      Book.author == library[i].author &&
-      Book.pageCount == library[i].pageCount
-    ) {
-      yesOrNo = true;
-    }
-  }
-  if (yesOrNo == true) {
-    return true;
+function addBookToLibrary(book) {
+  // Check if the book already exists in the library
+  const existingBook = myLibrary.find(
+    (b) =>
+      b.title === book.title &&
+      b.author === book.author &&
+      b.numPages === book.numPages
+  );
+  if (!existingBook) {
+    // Book does not exist in the library, add it
+    myLibrary.push(book);
   } else {
-    return false;
+    // Book already exists in the library, display a message and prevent the form from being submitted
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+    });
   }
 }
+
+function displayBooks() {
+  bookDisplay.innerHTML = "";
+  for (let i = 0; i < myLibrary.length; i++) {
+    const book = myLibrary[i];
+    const bookDiv = document.createElement("div");
+    const bookInfo = document.createElement("p");
+    bookInfo.textContent = book.info();
+    bookDiv.appendChild(bookInfo);
+    bookDisplay.appendChild(bookDiv);
+
+    // Add toggle read status button
+    const toggleReadStatusBtn = document.createElement("button");
+    toggleReadStatusBtn.textContent = "Toggle read status";
+    toggleReadStatusBtn.addEventListener("click", () => {
+      book.read = !book.read;
+      displayBooks();
+    });
+    bookDiv.appendChild(toggleReadStatusBtn);
+
+    // Add delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.classList.add("remove");
+    deleteBtn.addEventListener("click", () => {
+      myLibrary.splice(i, 1);
+      displayBooks();
+    });
+    bookDiv.appendChild(deleteBtn);
+  }
+}
+
+newBookForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const title = formData.get("title");
+  const author = formData.get("author");
+  const numPages = formData.get("numPages");
+  const read = formData.get("read");
+  const book = new Book(title, author, numPages, read);
+  addBookToLibrary(book);
+  displayBooks();
+  newBookForm.reset();
+  newBookForm.style.display = "none";
+});
+newBookBtn.addEventListener("click", () => {
+  newBookForm.style.display = "block";
+});
+
+bookDisplay.addEventListener("click", (event) => {
+  if (event.target.classList.contains("remove-book-btn")) {
+    const index = event.target.dataset.index;
+    myLibrary.splice(index, 1);
+    displayBooks();
+  } else if (event.target.classList.contains("toggle-read-status-btn")) {
+    const index = event.target.dataset.index;
+    myLibrary[index].read = !myLibrary[index].read;
+    displayBooks();
+  }
+});
+
+displayBooks();
+const cancelBtn = document.getElementById("cancel-btn");
+
+cancelBtn.addEventListener("click", () => {
+  newBookForm.style.display = "none";
+});
