@@ -1,18 +1,35 @@
 <html>
+<!-- The html element represents the root element of an HTML document -->
+
 <head>
+  <!-- The head element contains information about the document, such as its title, style, and scripts -->
   <link rel="stylesheet" type="text/css" href="styles.css">
+  <!-- The link element is used to link to an external style sheet -->
   <script src="js.js" defer></script>
+  <!-- The script element is used to include a script in the document, such as a JavaScript file -->
 </head>
+
 <body>
+  <!-- The body element contains the main content of the document -->
   <button id="new-book-btn">NEW BOOK</button>
+  <!-- The button element represents a button that the user can click on to perform an action -->
   <form id="new-book-form">
+    <!-- The form element represents a form that the user can fill out and submit -->
     <label>Title: <input type="text" name="title" required></label><br>
+    <!-- The label element represents a label for an input element -->
+    <!-- The input element represents an input field where the user can enter data -->
     <label>Author: <input type="text" name="author" required></label><br>
+    <!-- Same as above -->
     <label>Number of pages: <input type="number" name="numPages" required></label><br>
+    <!-- Same as above -->
     <label>Read: <input type="checkbox" name="read"></label><br>
+    <!-- The input element with type "checkbox" represents a checkbox that the user can toggle on or off -->
     <input type="button" value="Cancel" id="cancel-btn">
+    <!-- The input element with type "button" represents a clickable button -->
     <input type="submit" value="Add book">
+    <!-- The input element with type "submit" represents a button that submits the form data to a server -->
   </form>
   <div id="book-display"></div>
+  <!-- The div element is a generic container for holding other HTML elements -->
 </body>
 </html>
